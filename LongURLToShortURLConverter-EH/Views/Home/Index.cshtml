@@ -1,0 +1,43 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2">
+            <h2 style="align-content:center; color: darkorange">URL SHORTENING TOOL</h2>
+            <div class="input-group">
+                <input id="longUrlText" type="text" class="form-control input-lg" placeholder="Enter your URL." />
+                <div class="input-group-btn">
+                    <button id="btnConvertToShortUrl" class="btn btn-info btn-lg" style="border-color:darkorange; background-color: darkorange; color: aqua;">Convert to Short URL</button>
+                </div>
+            </div>
+            <div class="text-success">
+                <text id="successText" style="display: none; font-size: medium; padding:10px; margin-top: 10px;">Your shortened URL was produced successfully: </text><text id="newShortUrl" style="font-size: medium; padding:10px; margin-top: 10px;"></text>
+            </div>
+            <div class="text-warning">
+                <text id="failureText" style="color: red; display: none; font-size: medium; padding:10px; margin-top: 10px;">Ensure valid Url.</text>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $("#btnConvertToShortUrl").on("click", function () {
+            $("#successText").hide();
+            $("#newShortUrl").hide();
+            $("#btnCopyUrltext").hide();
+
+            var longUrl = $("#longUrlText").val();
+            $.post("/Home/GenerateShortUrl", { longUrl: longUrl }, function (data) {
+                /*localhost will need to be replaced with your current instace - find this in properties of your project*/
+                $("#newShortUrl").html("<a href='http://localhost:63846/" + data.shortUrl + "' target='_blank'>localhost:63846/" + data.shortUrl + "</a>");
+                $("#successText").show();
+                $("#newShortUrl").show();
+                $("#btnCopyUrltext").show();
+                $("#failureText").hide();
+            }).catch(function (error) {$("#failureText").show();})
+        })
+    </script>
+}
